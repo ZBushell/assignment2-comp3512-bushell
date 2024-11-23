@@ -1,14 +1,27 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-    // fetch api data for everything.
-    let year;
+    
+    
     const select = document.querySelector("select");
     year = select.addEventListener("change", (e) =>{
-       const c1 = getApiData("https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season="+ e.target.value);
+      
+        //fetch all the stuff we need. 
+       const races = getApiData("https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season="+ e.target.value);
+       const quali = getApiData("https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season="+ e.target.value);
+       const results = getApiData("https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season="+ e.target.value);
 
-       c1.then(data =>{console.dir(data)});
+       
+       quali.then(data =>{console.dir(data)});
+       results.then(data =>{console.dir(data)});
+       races.then(data =>{console.dir(data)});
+
     });
    
+
+
+
+
+
     // handy dandy reusable api getter
     function getApiData(url){
         const apiFetch = fetch(url)
