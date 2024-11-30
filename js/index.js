@@ -88,9 +88,9 @@ document.addEventListener("DOMContentLoaded", function(){
 document.addEventListener("DOMContentLoaded", () =>{
 
     const URLS = [
-        "https://www/randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
-        "https://www/randyconnolly.com/funwebdev/3rd/api/f1/results.php?season=",
-        "https://www/randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season="
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season=",
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season="
         ];
     
     async function fetchAPI(url, season){
