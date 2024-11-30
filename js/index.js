@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  //helper function for get data
  function getLocalCopy(key){
     const data = localStorage.getItem(key);
@@ -83,3 +84,25 @@ document.addEventListener("DOMContentLoaded", function(){
 });   
     
     
+
+document.addEventListener("DOMContentLoaded", () =>{
+
+    const URLS = [
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season=",
+        "https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season="
+        ];
+    
+    async function fetchAPI(url, season){
+        try {
+           const response = await fetch(url + season);
+           const data = await response.json();
+           return data;
+        } catch (error) {
+            console.dir(error);
+        }
+    }
+
+    fetchAPI(URLS[0],"2023").then(data=>{console.dir(data)});
+});
+>>>>>>> e6c3501 (botched async method requires keys)
