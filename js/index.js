@@ -81,6 +81,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
         getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
             
+            console.dir(rTbl);
+            console.dir(qTbl);
+            console.dir(eTbl);
             //build the races list.
             rTbl.forEach(e =>{
                 let c1 = document.createElement("tr");
@@ -98,13 +101,65 @@ document.addEventListener("DOMContentLoaded", function(){
     document.querySelector("#raceTbl").addEventListener("click", e =>{
         const seasonQuali = document.querySelector("#qualiTbl");
         const seasonResult = document.querySelector("#resultTbl");
-        
+        const first =document.querySelector("#first");
+        const second =document.querySelector("#second");
+        const third =document.querySelector("#thrid");        
+
+
+
+        let round; 
         //make sure it's actually a button
         if(e.target.tagName === 'BUTTON'){
-            const round = e.target.id;
-
-
+            round = e.target.id;
         }
+
+        //TODO: FILTER THE RACE PROPERLY
+        //build qualifying table
+        getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
+            qTbl.forEach(element =>{
+                let c1 = document.createElement("tr");
+                c1.innerHTML = '<td>'+element.position+'</td><td>'
+                +element.driver.forename+" "+element.driver.surname+'</td><td>'
+                +element.constructor.name+'</td><td>'
+                +element.q1+'</td><td>'
+                +element.q2+'</td><td>'
+                +element.q3+'</td>';
+                seasonQuali.appendChild(c1);
+            });
+        });
+
+        //TODO: FILTER THE RACE PROPERLY
+        //build race Results Table.
+        getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
+            eTbl.forEach(element =>{
+                let c2 = document.createElement("span");
+                switch(element.position){
+                    case "1":
+                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
+                        first.appendChild(c2);
+                    case "2":
+                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
+                        first.appendChild(c2);
+                    case "3":
+                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
+                        first.appendChild(c2);
+                }
+                
+
+                let c1 = document.createElement("tr");
+                c1.innerHTML = '<td>'+element.position+'</td><td>'
+                +element.driver.forename+" "+element.driver.surname+'</td><td>'
+                +element.constructor.name+'</td><td>'
+                +element.laps+'</td><td>'
+                +element.points+'</td><td>';
+                seasonResult.appendChild(c1);
+
+            });
+        });
+
+        
+
+
 
     //slect statement brackets
     });    
