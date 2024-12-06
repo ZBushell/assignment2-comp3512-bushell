@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function(){
         const seasonResult = document.querySelector("#resultTbl");
         const first =document.querySelector("#first");
         const second =document.querySelector("#second");
-        const third =document.querySelector("#thrid");        
+        const third =document.querySelector("#third");        
 
 
 
@@ -112,11 +112,21 @@ document.addEventListener("DOMContentLoaded", function(){
         if(e.target.tagName === 'BUTTON'){
             round = e.target.id;
         }
+        else{
+            round = undefined;
+        }
 
         //TODO: FILTER THE RACE PROPERLY
         //build qualifying table
         getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
-            qTbl.forEach(element =>{
+
+       
+            let filterTbl = eTbl.filter(e => e.race.round === round);
+            let filterQTbl = qTbl.filter(q => q.round === round);
+
+            //qalifying table
+            console.dir(filterQTbl);
+            filterQTbl.forEach(element =>{
                 let c1 = document.createElement("tr");
                 c1.innerHTML = '<td>'+element.position+'</td><td>'
                 +element.driver.forename+" "+element.driver.surname+'</td><td>'
@@ -126,25 +136,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 +element.q3+'</td>';
                 seasonQuali.appendChild(c1);
             });
-        });
-
-        //TODO: FILTER THE RACE PROPERLY
-        //build race Results Table.
-        getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
-            eTbl.forEach(element =>{
-                let c2 = document.createElement("span");
-                switch(element.position){
-                    case "1":
-                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
-                        first.appendChild(c2);
-                    case "2":
-                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
-                        first.appendChild(c2);
-                    case "3":
-                        c2.innerHTML = '<h3>'+element.driver.forename+" "+element.driver.surname+'</h3>';
-                        first.appendChild(c2);
-                }
-                
+            
+            //results table
+            filterTbl.forEach(element =>{
 
                 let c1 = document.createElement("tr");
                 c1.innerHTML = '<td>'+element.position+'</td><td>'
@@ -156,13 +150,26 @@ document.addEventListener("DOMContentLoaded", function(){
 
             });
         });
-
-        
-
-
-
     //slect statement brackets
     });    
+
+
+    //build constructor popup
+    document.querySelector("#trConstructor").addEventListener("click",e=>{
+        
+        //make sure it's actually a tr
+        if(e.target.tagName === 'TR'){
+            const round = e.target.id;
+        }
+        else{
+            const round = undefined;
+        }
+
+        const constructorCard = document.querySelector("");
+
+    });
+
+
 
 
 //dom bracket set
