@@ -80,10 +80,9 @@ document.addEventListener("DOMContentLoaded", function(){
       
 
         getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
-            
-            console.dir(rTbl);
-            console.dir(qTbl);
-            console.dir(eTbl);
+            // console.dir(rTbl);
+            // console.dir(qTbl);
+            // console.dir(eTbl);
             //build the races list.
             rTbl.forEach(e =>{
                 let c1 = document.createElement("tr");
@@ -99,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     //build the rest of the race results
     document.querySelector("#raceTbl").addEventListener("click", e =>{
+        
         const seasonQuali = document.querySelector("#qualiTbl");
         const seasonResult = document.querySelector("#resultTbl");
         const first =document.querySelector("#first");
@@ -120,57 +120,37 @@ document.addEventListener("DOMContentLoaded", function(){
         //build qualifying table
         getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
 
-       
-            let filterTbl = eTbl.filter(e => e.race.round === round);
-            let filterQTbl = qTbl.filter(q => q.round === round);
-
-            //qalifying table
-            console.dir(filterQTbl);
-            filterQTbl.forEach(element =>{
-                let c1 = document.createElement("tr");
-                c1.innerHTML = '<td>'+element.position+'</td><td>'
-                +element.driver.forename+" "+element.driver.surname+'</td><td>'
-                +element.constructor.name+'</td><td>'
-                +element.q1+'</td><td>'
-                +element.q2+'</td><td>'
-                +element.q3+'</td>';
-                seasonQuali.appendChild(c1);
-            });
             
-            //results table
-            filterTbl.forEach(element =>{
 
-                let c1 = document.createElement("tr");
-                c1.innerHTML = '<td>'+element.position+'</td><td>'
-                +element.driver.forename+" "+element.driver.surname+'</td><td>'
-                +element.constructor.name+'</td><td>'
-                +element.laps+'</td><td>'
-                +element.points+'</td><td>';
-                seasonResult.appendChild(c1);
+           qTbl.forEach(element =>{
 
-            });
+            console.dir(element);
+           });                
+          
         });
+
+
+
+
+
+
+
     //slect statement brackets
     });    
 
-
     //build constructor popup
-    document.querySelector("#trConstructor").addEventListener("click",e=>{
+    // document.querySelector("#trConstructor").addEventListener("click",e=>{
         
-        //make sure it's actually a tr
-        if(e.target.tagName === 'TR'){
-            const round = e.target.id;
-        }
-        else{
-            const round = undefined;
-        }
-
-        const constructorCard = document.querySelector("");
-
-    });
+    //     //make sure it's actually a tr
+    //     if(e.target.tagName === 'TR'){
+    //         const round = e.target.id;
+    //     }
+    //     else{
+    //         const round = undefined;
+    //     }
 
 
-
+    // });
 
 //dom bracket set
 });   
