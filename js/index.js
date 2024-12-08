@@ -24,6 +24,7 @@ function saveLocalCopy(key, data) {
 async function fetchTableData(url, year) {
     try {
         const response = await fetch(url + year);
+        console.dir(response);
         return await response.json();
     } catch (error) {
         console.dir(error);
@@ -33,23 +34,65 @@ async function fetchTableData(url, year) {
 
 // Fetch and store rTbl, qTbl, and eTbl data separately
 async function fetchAndStoreData(year) {
-    const rTbl = getLocalCopy('rTbl') || await fetchTableData(URLS.rTbl, year);
-    const qTbl = getLocalCopy('qTbl') || await fetchTableData(URLS.qTbl, year);
-    const eTbl = getLocalCopy('eTbl') || await fetchTableData(URLS.eTbl, year);
+    const rTbl = getLocalCopy('rTbl'+year) || await fetchTableData(URLS.rTbl, year);
+    const qTbl = getLocalCopy('qTbl'+year) || await fetchTableData(URLS.qTbl, year);
+    const eTbl = getLocalCopy('eTbl'+year) || await fetchTableData(URLS.eTbl, year);
 
     // Save to local storage
-    saveLocalCopy('rTbl', rTbl);
-    saveLocalCopy('qTbl', qTbl);
-    saveLocalCopy('eTbl', eTbl);
+    saveLocalCopy('rTbl'+year, rTbl);
+    saveLocalCopy('qTbl'+year, qTbl);
+    saveLocalCopy('eTbl'+year, eTbl);
 
     return { rTbl, qTbl, eTbl };
 }
 
+
+//don't touch above, it works
+//work on stuff below.
+
+
+
+
+function raceTable(data){
+    const tblBox = document.querySelector("#rTbl-container");
+    data.forEach(e=>{
+        const child = document.createElement("tr");
+        child.innerHTML = '<td>'+e.round+'</td><td>'+e.name+'</td><td><button value="'+e.round+'">Results</button></td>';
+        tblBox.appendChild(child);
+    });
+}
+function filterTables(tbl,round){
+
+    const filteredRaces = [];
+    
+
+    for (let i = 0; i < tbl.length; i++) {
+        if (tbl[i].race.round === round) {
+            filteredRaces.push(tbl[i]);
+        }
+    }
+    return filteredRaces;
+}
+function buildQTable(data){
+    const tblBox = document.querySelector("#rTbl-container");
+    
+    for (let i=0; i < data.length; i++){
+        console.dir(data[i].constructor);
+    }
+
+
+}
+
+
 // Table building logic using separate data
-function buildTables(data) {
+function buildDomTables(data) {
     const { rTbl, qTbl, eTbl } = data;
-
-
+    
+    console.log(qTbl[0].race.round);
+    
+    raceTable(rTbl);
+    buildQTable(filterTables(qTbl,9));
+    
 }
 
 // Example usage inside the main function
@@ -58,58 +101,19 @@ async function main(year) {
     buildDomTables(data);
 }
 
-// Function to create and populate a table dynamically
-function createTable(data, containerId, title) {
-    // Find the container element
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.error(`Container with ID '${containerId}' not found.`);
-        return;
-    }
-
-    // Create a table element
-    const table = document.createElement('table');
-    table.classList.add('data-table');
-
-    // Create and append a title row
-    if (title) {
-        const caption = document.createElement('caption');
-        caption.textContent = title;
-        table.appendChild(caption);
-    }
-
-    // Add table headers
-    const thead = document.createElement('thead');
-    const headers = Object.keys(data[0]); // Use keys from the first object as headers
-    const headerRow = document.createElement('tr');
-    headers.forEach(header => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    // Add table rows
-    const tbody = document.createElement('tbody');
-    data.forEach(row => {
-        const tableRow = document.createElement('tr');
-        headers.forEach(header => {
-            const td = document.createElement('td');
-            td.textContent = row[header];
-            tableRow.appendChild(td);
-        });
-        tbody.appendChild(tableRow);
-    });
-    table.appendChild(tbody);
-
-    // Clear the container and append the table
-    container.innerHTML = ''; // Clear previous content if any
-    container.appendChild(table);
-}
-
-//
+//rebuild all your stuff now.
 document.addEventListener("DOMContentLoaded", function(){
+
+    const seasonMenu = document.querySelector("#selectYear");
+    
+    //build the race menu.
+    seasonMenu.addEventListener("change", e =>{
+        
+         main(e.target.value);
+    });
+
+    //build qualifying and race results.
+
 
 });
 
