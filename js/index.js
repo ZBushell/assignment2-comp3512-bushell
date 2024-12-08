@@ -46,21 +46,15 @@ async function fetchAndStoreData(year) {
     return { rTbl, qTbl, eTbl };
 }
 
-
-//don't touch above, it works
-//work on stuff below.
-
-
-
-
 function raceTable(data){
     const tblBox = document.querySelector("#rTbl-container");
     data.forEach(e=>{
         const child = document.createElement("tr");
-        child.innerHTML = '<td>'+e.round+'</td><td>'+e.name+'</td><td><button value="'+e.round+'">Results</button></td>';
+        child.innerHTML = '<td>'+e.round+'</td><td>'+e.name+'</td><td><button data-value1="'+e.year+ '" data-value2="'+e.round+'">Results</button></td>';
         tblBox.appendChild(child);
     });
 }
+//filters the tables because the .filter method doesn't work
 function filterTables(tbl,round){
 
     const filteredRaces = [];
@@ -73,47 +67,106 @@ function filterTables(tbl,round){
     }
     return filteredRaces;
 }
-function buildQTable(data){
-    const tblBox = document.querySelector("#rTbl-container");
+//hides elements
+function hideElement(elementId) {
+    const element = document.querySelector(elementId);
+    if (element) {
+        element.style.display = 'none';
+    } else {
+        console.error(`Element with ID "${elementId}" not found.`);
+    }
+}
+
+//unhides elements
+function unhideElement(elementId) {
+    const element = document.querySelector(elementId);
+    if (element) {
+        element.style.display = '';
+    } else {
+        console.error(`Element with ID "${elementId}" not found.`);
+    }
+}
+
+
+//clears tables so results dont stack.
+function clearTables(selector){
+    document.querySelector(selector).innerHTML = " ";
+}
+
+//don't touch above, it works
+//work on stuff below.
+
+
+
+//builds the qualifying table
+function buildQandETables(qTbl, eTbl){
     
-    for (let i=0; i < data.length; i++){
-        console.dir(data[i].constructor);
+    
+    //qualifying tables
+    const tblBox = document.querySelector("#qTbl-container");
+    clearTables("#qTbl-container");
+    
+    for (let i=0; i < qTbl.length; i++){
+        //console.dir(qTbl[i]);
+        const childRow = document.createElement("tr");
+        childRow.innerHTML = '<td>'+qTbl[i].position+'</td><td>'+qTbl[i].driver.forename+' '+qTbl[i].driver.surname+'</td><td>'+qTbl[i].constructor.name+'</td><td>'+qTbl[i].q1+'</td><td>'+qTbl[i].q2+'</td><td>'+qTbl[i].q3+'</td>';
+        tblBox.appendChild(childRow);
     }
 
 
+    //results table
+    const eTblBox = document.querySelector("#eTbl-container");
+    clearTables("#eTbl-container");    
+
+
+    for (let i=0; i < eTbl.length; i++){
+        //console.dir(eTbl[i]);
+        const childRow = document.createElement("tr");
+        childRow.innerHTML = '<td>'+eTbl[i].position+'</td><td>'+eTbl[i].driver.forename+' '+eTbl[i].driver.surname+'</td><td>'+eTbl[i].constructor.name+'</td><td>'+eTbl[i].laps+'</td><td>'+eTbl[i].points+'</td>';
+        eTblBox.appendChild(childRow);
+    }
 }
 
 
-// Table building logic using separate data
-function buildDomTables(data) {
-    const { rTbl, qTbl, eTbl } = data;
-    
-    console.log(qTbl[0].race.round);
-    
-    raceTable(rTbl);
-    buildQTable(filterTables(qTbl,9));
-    
-}
 
-// Example usage inside the main function
-async function main(year) {
+async function main(year){
     const data = await fetchAndStoreData(year);
-    buildDomTables(data);
+    const { rTbl, qTbl, eTbl } = data;
+    raceTable(rTbl);
+    unhideElement("#browse");
 }
+
+async function main2(year, round){
+    const data = await fetchAndStoreData(year);
+    const { rTbl, qTbl, eTbl } = data;
+    buildQandETables(filterTables(qTbl,round),filterTables(eTbl,round));
+}
+
+
+hideElement("#browse");
+hideElement("#driverCard");
+hideElement("#constructorCard");
+hideElement("#circuitCard");
 
 //rebuild all your stuff now.
 document.addEventListener("DOMContentLoaded", function(){
 
-    const seasonMenu = document.querySelector("#selectYear");
     
+   
+
     //build the race menu.
-    seasonMenu.addEventListener("change", e =>{
-        
-         main(e.target.value);
+    document.querySelector("#selectYear").addEventListener("change", e =>{
+
+        main(e.target.value);
     });
 
     //build qualifying and race results.
+    document.querySelector("#races").addEventListener("click", e =>{
+       
+        //WHYYYYYYYY JAVASCRIPT! I THOUGHT YOU DIDN'T CARE ABOUT TYPING
+        main2(parseInt(e.target.dataset.value1), parseInt(e.target.dataset.value2));
 
+    }); 
 
 });
 
