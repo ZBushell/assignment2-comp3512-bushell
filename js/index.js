@@ -1,156 +1,115 @@
 
-const URLS = [
-    "https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
-    "https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season=",
-    "https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season="
-    
-    ];
+const URLS = {
+    rTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
+    qTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season=",
+    eTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season="
+};
 
- //helper function for get data
- function getLocalCopy(key){
+// Helper functions for local storage
+function getLocalCopy(key) {
     const data = localStorage.getItem(key);
     try {
-        
-        return JSON.parse(data);
-    
+        return data ? JSON.parse(data) : null;
     } catch (error) {
         console.dir(error);
         throw error;
     }
 }
 
-//does what it's named
-function saveLocalCopy(key, data){
-
+function saveLocalCopy(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
-
 }
 
-async function getAPIData(url, year) {
+// Fetch API data for a single table
+async function fetchTableData(url, year) {
     try {
         const response = await fetch(url + year);
-        const data = await response.json();
-        return data;
-     } catch (error) {
-         console.dir(error);
-     }
-}
-
-//gets data from promises and returns something useful. 
-//also stores data locally if not there already.
-async function getDataFromPromise(url, year){
-    const key = year + "-key"; 
-    const cachedData = getLocalCopy(key);
-
-    if (cachedData) {
-        
-        //return
-        const { rTbl, qTbl, eTbl } = cachedData;
-        return { rTbl, qTbl, eTbl };
-    } else {
-    
-        try {
-            const results = url.map(urls => getAPIData(urls, year));
-            const data = await Promise.all(results);
-            const [rTbl, qTbl, eTbl] = data;
-        
-            // Save the fetched data to localStorage
-            saveLocalCopy(key, { rTbl, qTbl, eTbl });
-            
-            return {rTbl, qTbl, eTbl};
-        
-        } catch (error) {
-            console.dir(error);
-            throw error;
-        }
+        return await response.json();
+    } catch (error) {
+        console.dir(error);
+        throw error;
     }
 }
 
-/*
-|================|
-|=DOM Operations=|
-|================|
-*/
+// Fetch and store rTbl, qTbl, and eTbl data separately
+async function fetchAndStoreData(year) {
+    const rTbl = getLocalCopy('rTbl') || await fetchTableData(URLS.rTbl, year);
+    const qTbl = getLocalCopy('qTbl') || await fetchTableData(URLS.qTbl, year);
+    const eTbl = getLocalCopy('eTbl') || await fetchTableData(URLS.eTbl, year);
 
+    // Save to local storage
+    saveLocalCopy('rTbl', rTbl);
+    saveLocalCopy('qTbl', qTbl);
+    saveLocalCopy('eTbl', eTbl);
+
+    return { rTbl, qTbl, eTbl };
+}
+
+// Table building logic using separate data
+function buildTables(data) {
+    const { rTbl, qTbl, eTbl } = data;
+
+
+}
+
+// Example usage inside the main function
+async function main(year) {
+    const data = await fetchAndStoreData(year);
+    buildDomTables(data);
+}
+
+// Function to create and populate a table dynamically
+function createTable(data, containerId, title) {
+    // Find the container element
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`Container with ID '${containerId}' not found.`);
+        return;
+    }
+
+    // Create a table element
+    const table = document.createElement('table');
+    table.classList.add('data-table');
+
+    // Create and append a title row
+    if (title) {
+        const caption = document.createElement('caption');
+        caption.textContent = title;
+        table.appendChild(caption);
+    }
+
+    // Add table headers
+    const thead = document.createElement('thead');
+    const headers = Object.keys(data[0]); // Use keys from the first object as headers
+    const headerRow = document.createElement('tr');
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Add table rows
+    const tbody = document.createElement('tbody');
+    data.forEach(row => {
+        const tableRow = document.createElement('tr');
+        headers.forEach(header => {
+            const td = document.createElement('td');
+            td.textContent = row[header];
+            tableRow.appendChild(td);
+        });
+        tbody.appendChild(tableRow);
+    });
+    table.appendChild(tbody);
+
+    // Clear the container and append the table
+    container.innerHTML = ''; // Clear previous content if any
+    container.appendChild(table);
+}
+
+//
 document.addEventListener("DOMContentLoaded", function(){
 
-    document.querySelector("#selectYear").addEventListener("change", e=>{
-        
-        const seasonRaces = document.querySelector("#raceTbl");
-      
+});
 
-        getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
-            // console.dir(rTbl);
-            // console.dir(qTbl);
-            // console.dir(eTbl);
-            //build the races list.
-            rTbl.forEach(e =>{
-                let c1 = document.createElement("tr");
-                c1.innerHTML = '<td>'+e.round+'</td><td>'+e.name+'</td><td><button id="'+e.round+'">Results</button></td>';
-                seasonRaces.appendChild(c1);
-
-            });
-            
-        });
-
-    //select statement bracket set
-    });
-
-    //build the rest of the race results
-    document.querySelector("#raceTbl").addEventListener("click", e =>{
-        
-        const seasonQuali = document.querySelector("#qualiTbl");
-        const seasonResult = document.querySelector("#resultTbl");
-        const first =document.querySelector("#first");
-        const second =document.querySelector("#second");
-        const third =document.querySelector("#third");        
-
-
-
-        let round; 
-        //make sure it's actually a button
-        if(e.target.tagName === 'BUTTON'){
-            round = e.target.id;
-        }
-        else{
-            round = undefined;
-        }
-
-        //TODO: FILTER THE RACE PROPERLY
-        //build qualifying table
-        getDataFromPromise(URLS,e.target.value).then(({rTbl, qTbl, eTbl}) =>{
-
-            
-
-           qTbl.forEach(element =>{
-
-            console.dir(element);
-           });                
-          
-        });
-
-
-
-
-
-
-
-    //slect statement brackets
-    });    
-
-    //build constructor popup
-    // document.querySelector("#trConstructor").addEventListener("click",e=>{
-        
-    //     //make sure it's actually a tr
-    //     if(e.target.tagName === 'TR'){
-    //         const round = e.target.id;
-    //     }
-    //     else{
-    //         const round = undefined;
-    //     }
-
-
-    // });
-
-//dom bracket set
-});   
