@@ -18,6 +18,7 @@ function getLocalCopy(key) {
     }
 }
 
+//does what it says
 function saveLocalCopy(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
@@ -48,13 +49,26 @@ async function fetchAndStoreData(year) {
     return { rTbl, qTbl, eTbl };
 }
 
+//builds race table
 function raceTable(data) {
     const tblBox = document.querySelector("#rTbl-container");
-    data.forEach(e => {
+
+    data.forEach((e, index) => {
         const child = document.createElement("tr");
-        child.innerHTML = '<td>' + e.round + '</td><td id="' + e.circuit.ref + '">' + e.name + '</td><td><button data-value1="' + e.year + '" data-value2="' + e.round + '">Results</button></td>';
+        child.classList.add("m-[0.25rem]");
+    
+        // Set background color based on row index (odd or even)
+        const rowBgColor = index % 2 === 0 ? 'bg-[#cc1e4a]' : 'bg-[#223971]';
+    
+        child.innerHTML = '<td class="px-2 py-1 font-bold">' + e.round + '</td>' +
+                          '<td id="' + e.circuit.ref + '" class="px-2 py-1 text-center font-bold">' + e.name + '</td>' +
+                          '<td class="px-2 py-1 ' + rowBgColor + ' text-[#ffc906] rounded-sm">' +
+                          '<button class="text-[#121f45] px-3 py-1 mx-auto block text-center font-bold" data-value1="' + e.year + '" data-value2="' + e.round + '">Results</button>' +
+                          '</td>';
+    
         tblBox.appendChild(child);
     });
+    
 }
 
 // filters the tables because the .filter method doesn't work
@@ -103,15 +117,21 @@ function buildQandETables(qTbl, eTbl) {
 
     for (let i = 0; i < qTbl.length; i++) {
         const childRow = document.createElement("tr");
-        childRow.innerHTML = '<td>' + qTbl[i].position + '</td>' +
-            '<td><span id="driver ' + qTbl[i].driver.ref + '">' +
+        childRow.classList.add("border","border-gray-400");
+
+        if(i % 2 ==0){
+            childRow.classList.add("bg-[#ffc906]","text-gray-800");
+        }
+
+        childRow.innerHTML = '<td class="pr-6">' + qTbl[i].position + '</td>' +
+            '<td class="pr-6"><span id="driver ' + qTbl[i].driver.ref + '">' +
             qTbl[i].driver.forename + ' ' +
             qTbl[i].driver.surname + '</span></td>' +
-            '<td><span id="constructor ' + qTbl[i].constructor.ref + '">' +
+            '<td class="pr-6"><span id="constructor ' + qTbl[i].constructor.ref + '">' +
             qTbl[i].constructor.name + '</span></td>' +
-            '<td>' + qTbl[i].q1 + '</td>' +
-            '<td>' + qTbl[i].q2 + '</td>' +
-            '<td>' + qTbl[i].q3 + '</td>';
+            '<td class="pr-6">' + qTbl[i].q1 + '</td>' +
+            '<td class="pr-6">' + qTbl[i].q2 + '</td>' +
+            '<td class="pr-6">' + qTbl[i].q3 + '</td>';
 
         tblBox.appendChild(childRow);
     }
@@ -122,17 +142,21 @@ function buildQandETables(qTbl, eTbl) {
 
     for (let i = 0; i < eTbl.length; i++) {
         const childRow = document.createElement("tr");
-        childRow.innerHTML = '<td>' + eTbl[i].position + '</td>' +
-            '<td> <span id="driver ' + eTbl[i].driver.ref + '">' + eTbl[i].driver.forename + ' ' + eTbl[i].driver.surname + '</span></td>' +
-            '<td> <span id="constructor ' + eTbl[i].constructor.ref + '">' + eTbl[i].constructor.name + '</span></td>' +
-            '<td>' + eTbl[i].laps + '</td>' +
-            '<td>' + eTbl[i].points + '</td>';
+        childRow.classList.add("border","border-gray-400");
+
+        if(i % 2 ==0){
+            childRow.classList.add("bg-[#ffc906]","text-gray-800");
+        }
+
+        childRow.innerHTML = '<td class="pr-6">' + eTbl[i].position + '</td>' +
+            '<td class="pr-6"> <span id="driver ' + eTbl[i].driver.ref + '">' + eTbl[i].driver.forename + ' ' + eTbl[i].driver.surname + '</span></td>' +
+            '<td class="pr-6"> <span id="constructor ' + eTbl[i].constructor.ref + '">' + eTbl[i].constructor.name + '</span></td>' +
+            '<td class="pr-6">' + eTbl[i].laps + '</td>' +
+            '<td class="pr-6">' + eTbl[i].points + '</td>';
         eTblBox.appendChild(childRow);
     }
 }
 
-// don't touch above, it works
-// work on stuff below.
 
 async function main(year) {
     const data = await fetchAndStoreData(year);
@@ -140,6 +164,7 @@ async function main(year) {
     console.dir(rTbl);
     raceTable(rTbl);
     hideElement("#home");
+    hideElement("#banter");
     unhideElement("#browse");
 }
 
@@ -164,7 +189,7 @@ async function main4(year, secondID) {
 async function main5(year, circuitID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
-    buildConstructorCard(circuitID, eTbl);
+    buildCircuitCard(circuitID, eTbl);
 }
 
 function buildDriverCard(secondID, Tbl) {
@@ -182,16 +207,16 @@ function buildDriverCard(secondID, Tbl) {
         return;
     }
 
-    container.innerHTML = '';
+    clearTables("#driverCard");
 
     container.innerHTML = `
-        <div>
-            <span id="driverName">${driverData.driver.forename} ${driverData.driver.surname}</span>
-            <span id="driverNationality">${driverData.driver.nationality}</span>
-            <span id="driverUrl">${driverData.driver.number}</span>
-        </div>
+        <ul>
+            <li id="driverName">${driverData.driver.forename} ${driverData.driver.surname}</li>
+            <li id="driverNationality">${driverData.driver.nationality}</li>
+            <li id="driverUrl">${driverData.driver.number}</li>
+        </ul>
     `;
-    unhideElement("#driverCard");
+    unhideElement("#driver");
 }
 
 function buildConstructorCard(secondID, Tbl) {
@@ -202,36 +227,44 @@ function buildConstructorCard(secondID, Tbl) {
         console.error(`Constructor with name "${secondID}" not found.`);
         return null;
     }
-    container.innerHTML = '';
+    clearTables("#constructorCard");
 
     container.innerHTML = `
-        <div>
-            <span id="constructorName">${constructorData.constructor.name}</span>
-            <span id="constructorNationality">${constructorData.constructor.nationality}</span>
-            <span id="constructorUrl">${constructorData.constructor.url}</span>
-        </div>
+        <ul>
+            <li id="constructorName">${constructorData.constructor.name}</li>
+            <li id="constructorNationality">${constructorData.constructor.nationality}</li>
+            <li id="constructorUrl">${constructorData.constructor.url}</li>
+        </ul>
     `;
-    unhideElement("#constructorCard");
+    unhideElement("#constructor");
 }
 
 function buildCircuitCard(secondID, Tbl) {
-    const circuitData = Tbl.find(entry => entry.circuit.ref === secondID);
+    const circuitData = Tbl.find(function(entry) {
+        return entry.circuit.ref === secondID;
+    });
 
     const container = document.querySelector("#circuitCard");
     if (!circuitData) {
-        console.error(`Circuit with name "${secondID}" not found.`);
+        console.error('Circuit with name "' + secondID + '" not found.');
         return null;
     }
-    container.innerHTML = '';
 
-    container.innerHTML = `
-        <div>
-            <span id="circuitName">${constructorData.circuit.name}</span>
-            <span id="circuitNationality">${constructorData.circuit.country}</span>
-            <span id="circuitUrl">${constructorData.circuit.url}</span>
-        </div>
-    `;
-    unhideElement("#circuitCard");
+    clearTables("#circuitCard");
+
+    container.innerHTML = 
+        '<div>' +
+            '<span id="circuitName">' + (circuitData.circuit.name || 'N/A') + '</span>' +
+            '<span id="circuitNationality">' + (circuitData.circuit.country || 'N/A') + '</span>' +
+            '<span id="circuitUrl">' + (circuitData.circuit.url || 'N/A') + '</span>' +
+        '</div>';
+
+    unhideElement("#circuit");
+}
+
+
+function xButton(selector){
+    document.querySelector(selector).style.display = 'none';
 }
 
 /*
@@ -243,20 +276,21 @@ function buildCircuitCard(secondID, Tbl) {
 */
 
 hideElement("#browse");
-hideElement("#driverCard");
-hideElement("#constructorCard");
-hideElement("#circuitCard");
+hideElement("#driver");
+hideElement("#constructor");
+hideElement("#circuit");
 
 // rebuild all your stuff now.
 document.addEventListener("DOMContentLoaded", function () {
 
     unhideElement("#home");
-
+    console.dir(YEAR);
     // build the race menu.
     document.querySelector("#selectYear").addEventListener("change", e => {
         clearTables("#rTbl-container");
         YEAR = e.target.value;
         main(YEAR);
+        console.dir(YEAR);
     });
 
     // build qualifying and race results.
@@ -277,12 +311,21 @@ document.addEventListener("DOMContentLoaded", function () {
             // Create a driver card
             main3(YEAR, secondId);
             unhideElement("#driverCard");
+            
+            document.querySelector("#driver").addEventListener("click", e => {
+                xButton("#driver");
+                clearTables("#driverCard");
+            })
         }
         else if (clicked.includes("constructor")) {
 
             main4(YEAR, secondId);
             unhideElement("#constructorCard");
 
+            document.querySelector("#constructor").addEventListener("click", e => {
+                xButton("#constructor");
+                clearTables("#constructorCard");
+            })
         }
 
     });
@@ -297,12 +340,21 @@ document.addEventListener("DOMContentLoaded", function () {
             // Create a driver card
             main3(YEAR, secondId);
             unhideElement("#driverCard");
+            
+            document.querySelector("#driver").addEventListener("click", e => {
+                xButton("#driver");
+                clearTables("#driverCard");
+            })
         }
         else if (clicked.includes("constructor")) {
 
             main4(YEAR, secondId);
             unhideElement("#constructorCard");
 
+            document.querySelector("#constructor").addEventListener("click", e => {
+                xButton("#constructor");
+                clearTables("#constructorCard");
+            })
         }
 
     });

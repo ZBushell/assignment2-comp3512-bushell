@@ -7,50 +7,54 @@
   <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
   <title>Zach's F1 Addiction v2</title>
   <link rel="stylesheet" href="css/normalize.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <figure>
+<body class="bg-[#121f45] text-white">
+  <header class="bg-gray-900 p-[1.5rem] flex items-center justify-between h-[200px]">
+    <figure class="w-[150px] h-auto">
       <img src="./images/logo.png" alt="Max Verstappen Logo">
     </figure>
-    <select name="year" id="selectYear">
-      <option value="2020">2020</option>
-      <option value="2021">2021</option>
-      <option value="2022">2022</option>
-      <option value="2023">2023</option>
-    </select>
+    <h1 class="text-5xl font-bold text-[#cc1e4a]">2024 WORLD CHAMPION: <span class="font-bold text-[#FF7F32]">MAX VERSTAPPEN</span></h1>
+      <select class="float-right justify-center bg-[#cc1e4a] w-[300px] h-auto border border-gray-400 text-center text-lg font-bold text-[#121f45]" name="year" id="selectYear">
+        <option value="2020">2020</option>
+        <option value="2021">2021</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+      </select>
+      
+      
   </header> 
 
-  <main>
-    <aside>
-      <h3>About</h3>
+  <main class="flex justify-between mt-[1rem]">
+    <aside class="w-full max-w-[25rem] bg-gray-900 p-4 mr-[2rem]" id="banter">
+      <h3 class="text-[#cc1e4a] text-2xl">About</h3>
             <p>
             This page is a php excersize for a web development course I'm taking at Mount Royal University in the Fall Semester of 2024. Specifically,  COMP3512 Assignment 1. It pulls the results of the 2022 f1 season from an sqlite3 database and displays the results in various different ways. It offers a Restful API which can be found in the API section of the website. It exports in json format.
             </p>
             
             <p><a href="https://github.com/ZBushell/assignment1-comp3512-bushell">Github Repo can be found here</a></p>
-            <h3>Disclaimer</h3>
+            <h3 class="text-[#cc1e4a] text-2xl">Disclaimer</h3>
             <p>This website may or may not be programmed to only return Max Verstappen in his rightful position, first. Any #TeamLewis fans still crying over 2021 can kindly leave. So keep raging that Mercedes can't compete, internalize the fact that you belong below Williams, and realize Adrian Newey and his cars are the greatest thing since sliced bread.</p>
       
     </aside>
     <article id="home">
-      <h2>
+      <h2 class="text-[#cc1e4a] text-4xl mb-[1rem]">
         Select a season to see the results.
       </h2>
-      <figure>
+      <figure class="group">
         <img src="./images/verstappen.png" alt="Max Verstappen Being an Icon">
-        <cite>[2] "Verstappen charges to record 16th win of the season after Pérez's opening lap,"
+        <cite class="hidden group-hover:block absolute center-0 right-10 w-[50%] h-auto bg-gray-800">[2] "Verstappen charges to record 16th win of the season after Pérez's opening lap,"
           Formula 1, 2024. [Online]. Available: https://www.formula1.com/en/latest/article
           verstappen-charges-to-record-16th-win-of-the-season-after-perezs-opening-lap
           4HoUxkHmH8EhxFRfauSQzS. [Accessed: Oct. 19, 2024].</cite>
       </figure>
     </article>
-    <article id="browse">
+    <article id="browse" class="flex justify-between mt-[1rem]">
 
 
-      <section id="races">
-        <h2><span id="seasonName"></span> Season Races</h2>
-        <table  class="tables">
+      <section id="races" class="p-[1.5rem] mr-[1.5rem]">
+        <h2 class="text-[#cc1e4a] text-4xl mb-[0.5rem]"><span id="seasonName"></span> Season Races</h2>
+        <table  class="border border-gray-400 p-2 bg-gray-800 text-white">
           <thead>
             <tr>
               <th>Round</th>
@@ -64,17 +68,17 @@
         </table>
       </section>
       
-      <section id="qualifying">
-        <h2>Qualifying Results</h2>
-        <table  class="tables">
-          <thead>
+      <section id="qualifying" class="m-[1.5rem]">
+        <h2 class="text-[#cc1e4a] text-4xl mb-[0.5rem]">Qualifying Results</h2>
+        <table  class="border border-gray-400 p-2 bg-gray-800 text-white">
+          <thead class="border border-gray-400">
             <tr>
-              <th>Pos</th>
-              <th>Driver</th>
-              <th>Constructor</th>
-              <th>Q1</th>
-              <th>Q2</th>
-              <th>Q3</th>
+              <th class="pr-6">Pos</th>
+              <th class="pr-6">Driver</th>
+              <th class="pr-6">Constructor</th>
+              <th class="pr-6">Q1</th>
+              <th class="pr-6">Q2</th>
+              <th class="pr-6">Q3</th>
             </tr>
           </thead>
           <tbody id="qTbl-container">
@@ -84,44 +88,58 @@
       </section>
 
 
-      <secion id="results">
-        <h2>Grand Prix Results</h2>
-        <table class="tables">
-          <thead>
+      <section id="results" class="m-[1.5rem]">
+        <h2 class="text-[#cc1e4a] text-4xl mb-[0.5rem]">Grand Prix Results</h2>
+        <table class="border border-gray-400 p-2 bg-gray-800 text-white shadow-lg">
+          <thead class="border border-gray-400">
             <tr>
-              <th>Pos</th>
-              <th>Driver</th>
-              <th>Constructor</th>
-              <th>Laps</th>
-              <th>Pts</th>
+              <th class="pr-6">Pos</th>
+              <th class="pr-6">Driver</th>
+              <th class="pr-6">Constructor</th>
+              <th class="pr-6">Laps</th>
+              <th class="pr-6">Pts</th>
             </tr>
           </thead>
           <tbody id="eTbl-container">
 
           </tbody>
         </table>
-      </secion>
+      </section>
     </article>
 
-    <aside id="constructorCard">
-      
+    <aside id="constructor" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#121f45] bg-opacity-90 flex justify-center items-center z-50 w-[300px] h-[300px] rounded-lg border-2 border-white">
+      <div class="text-center text-white">
+        <h3 class="text-xl font-semibold">Constructor Details</h3>
+        <div id="constructorCard" class="mt-4"></div>
+        <div id="xButton" class="mt-4 cursor-pointer text-sm text-[#ffc906] hover:text-white">Close</div>
+        
       </div>
     </aside>
-
-    <aside id="driverCard">
-      
-    </aside>
-
-
-    <aside id="circuitCard">
-      
-    </aside>    
     
+    <aside id="driver" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#121f45] bg-opacity-90 flex justify-center items-center z-50 w-[300px] h-[300px] rounded-lg border-2 border-white">
+      <div class="text-center text-white">
+        <h3 class="text-xl font-semibold">Driver Bio</h3>
+        <div id="driverCard" class="mt-4"></div>
+        <div id="xButton" class="mt-4 cursor-pointer text-sm text-[#ffc906] hover:text-white">Close</div>
+        
+      </div>
+    </aside>
+    
+    <aside id="circuit" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#121f45] bg-opacity-90 flex justify-center items-center z-50 w-[300px] h-[300px] rounded-lg border-2 border-white">
+      <div class="text-center text-white">
+        <h3 class="text-xl font-semibold">Circuit Information</h3>
+        <div id="circuitCard" class="mt-4"></div>
+        <div id="xButton" class="mt-4 cursor-pointer text-sm text-[#ffc906] hover:text-white">Close</div>
+        
+      </div>
+    </aside>
+    
+  
 
 
     <script src="./js/index.js"></script>
   </main>
-  <footer>
+  <footer class="bg-gray-900 p-[1.5rem] mt-[1rem] flex items-center justify-between h-[200px]">
   
     <p>This is intended for educational purposes only, data may not be up to date or necessarily accurate. <a href="https://www.gnu.org/licenses/gpl-3.0.txt">This page is lisenced under copyleft. <span>Copyright Zach Bushell 2024</span></a></p>
 
