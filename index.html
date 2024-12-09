@@ -6,23 +6,32 @@
   <meta name="description" content="Javascript assignment for comuter science">
   <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
   <title>Zach's F1 Addiction v2</title>
+  <link rel="stylesheet" href="css/normalize.css">
 </head>
 <body>
   <header>
     <figure>
       <img src="./images/logo.png" alt="Max Verstappen Logo">
     </figure>
+    <select name="year" id="selectYear">
+      <option value="2020">2020</option>
+      <option value="2021">2021</option>
+      <option value="2022">2022</option>
+      <option value="2023">2023</option>
+    </select>
   </header> 
 
   <main>
     <aside>
-
-      <select name="year" id="selectYear">
-        <option value="2020">2020</option>
-        <option value="2021">2021</option>
-        <option value="2022">2022</option>
-        <option value="2023">2023</option>
-      </select>
+      <h3>About</h3>
+            <p>
+            This page is a php excersize for a web development course I'm taking at Mount Royal University in the Fall Semester of 2024. Specifically,  COMP3512 Assignment 1. It pulls the results of the 2022 f1 season from an sqlite3 database and displays the results in various different ways. It offers a Restful API which can be found in the API section of the website. It exports in json format.
+            </p>
+            
+            <p><a href="https://github.com/ZBushell/assignment1-comp3512-bushell">Github Repo can be found here</a></p>
+            <h3>Disclaimer</h3>
+            <p>This website may or may not be programmed to only return Max Verstappen in his rightful position, first. Any #TeamLewis fans still crying over 2021 can kindly leave. So keep raging that Mercedes can't compete, internalize the fact that you belong below Williams, and realize Adrian Newey and his cars are the greatest thing since sliced bread.</p>
+      
     </aside>
     <article id="home">
       <h2>

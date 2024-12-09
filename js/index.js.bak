@@ -1,10 +1,11 @@
+
 const URLS = {
     rTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php?season=",
     qTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/qualifying.php?season=",
     eTbl: "https://www.randyconnolly.com/funwebdev/3rd/api/f1/results.php?season="
 };
 
-// GLOBAL default year.
+//GLOBAL default year.
 let YEAR = 2020;
 
 // Helper functions for local storage
@@ -36,30 +37,31 @@ async function fetchTableData(url, year) {
 
 // Fetch and store rTbl, qTbl, and eTbl data separately
 async function fetchAndStoreData(year) {
-    const rTbl = getLocalCopy('rTbl' + year) || await fetchTableData(URLS.rTbl, year);
-    const qTbl = getLocalCopy('qTbl' + year) || await fetchTableData(URLS.qTbl, year);
-    const eTbl = getLocalCopy('eTbl' + year) || await fetchTableData(URLS.eTbl, year);
+    const rTbl = getLocalCopy('rTbl'+year) || await fetchTableData(URLS.rTbl, year);
+    const qTbl = getLocalCopy('qTbl'+year) || await fetchTableData(URLS.qTbl, year);
+    const eTbl = getLocalCopy('eTbl'+year) || await fetchTableData(URLS.eTbl, year);
 
     // Save to local storage
-    saveLocalCopy('rTbl' + year, rTbl);
-    saveLocalCopy('qTbl' + year, qTbl);
-    saveLocalCopy('eTbl' + year, eTbl);
+    saveLocalCopy('rTbl'+year, rTbl);
+    saveLocalCopy('qTbl'+year, qTbl);
+    saveLocalCopy('eTbl'+year, eTbl);
 
     return { rTbl, qTbl, eTbl };
 }
 
-function raceTable(data) {
+function raceTable(data){
     const tblBox = document.querySelector("#rTbl-container");
-    data.forEach(e => {
+    data.forEach(e=>{
         const child = document.createElement("tr");
-        child.innerHTML = '<td>' + e.round + '</td><td id="' + e.circuit.ref + '">' + e.name + '</td><td><button data-value1="' + e.year + '" data-value2="' + e.round + '">Results</button></td>';
+        child.innerHTML = '<td>'+e.round+'</td><td id="'+e.circuit.ref+'">'+e.name+'</td><td><button data-value1="'+e.year+ '" data-value2="'+e.round+'">Results</button></td>';
         tblBox.appendChild(child);
     });
 }
+//filters the tables because the .filter method doesn't work
+function filterTables(tbl,round){
 
-// filters the tables because the .filter method doesn't work
-function filterTables(tbl, round) {
     const filteredRaces = [];
+    
 
     for (let i = 0; i < tbl.length; i++) {
         if (tbl[i].race.round === round) {
@@ -68,8 +70,7 @@ function filterTables(tbl, round) {
     }
     return filteredRaces;
 }
-
-// hides elements
+//hides elements
 function hideElement(elementId) {
     const element = document.querySelector(elementId);
     if (element) {
@@ -79,7 +80,7 @@ function hideElement(elementId) {
     }
 }
 
-// unhides elements
+//unhides elements
 function unhideElement(elementId) {
     const element = document.querySelector(elementId);
     if (element) {
@@ -89,52 +90,60 @@ function unhideElement(elementId) {
     }
 }
 
-// clears tables so results dont stack.
-function clearTables(selector) {
+//clears tables so results dont stack.
+function clearTables(selector){
     document.querySelector(selector).innerHTML = " ";
 }
 
-// builds the qualifying table
-function buildQandETables(qTbl, eTbl) {
 
-    // qualifying tables
+//builds the qualifying table
+function buildQandETables(qTbl, eTbl){
+    
+    
+    //qualifying tables
     const tblBox = document.querySelector("#qTbl-container");
     clearTables("#qTbl-container");
-
-    for (let i = 0; i < qTbl.length; i++) {
+    
+    for (let i=0; i < qTbl.length; i++){
+        //console.dir(qTbl[i]);
         const childRow = document.createElement("tr");
-        childRow.innerHTML = '<td>' + qTbl[i].position + '</td>' +
-            '<td><span id="driver ' + qTbl[i].driver.ref + '">' +
-            qTbl[i].driver.forename + ' ' +
-            qTbl[i].driver.surname + '</span></td>' +
-            '<td><span id="constructor ' + qTbl[i].constructor.ref + '">' +
-            qTbl[i].constructor.name + '</span></td>' +
-            '<td>' + qTbl[i].q1 + '</td>' +
-            '<td>' + qTbl[i].q2 + '</td>' +
-            '<td>' + qTbl[i].q3 + '</td>';
+        childRow.innerHTML = '<td>'+qTbl[i].position+'</td>'+
+        '<td><span id="driver '+qTbl[i].driver.ref+'">'
+        +qTbl[i].driver.forename+' '
+        +qTbl[i].driver.surname+'</span></td>'+
+        '<td><span id="constructor '+qTbl[i].constructor.ref+'">'+
+        qTbl[i].constructor.name+'</span></td>'
+        +'<td>'+qTbl[i].q1+'</td>'
+        +'<td>'+qTbl[i].q2+'</td>'+
+        '<td>'+qTbl[i].q3+'</td>';
 
         tblBox.appendChild(childRow);
     }
 
-    // results table
-    const eTblBox = document.querySelector("#eTbl-container");
-    clearTables("#eTbl-container");
 
-    for (let i = 0; i < eTbl.length; i++) {
+    //results table
+    const eTblBox = document.querySelector("#eTbl-container");
+    clearTables("#eTbl-container");    
+
+
+    for (let i=0; i < eTbl.length; i++){
+        //console.dir(eTbl[i]);
         const childRow = document.createElement("tr");
-        childRow.innerHTML = '<td>' + eTbl[i].position + '</td>' +
-            '<td> <span id="driver ' + eTbl[i].driver.ref + '">' + eTbl[i].driver.forename + ' ' + eTbl[i].driver.surname + '</span></td>' +
-            '<td> <span id="constructor ' + eTbl[i].constructor.ref + '">' + eTbl[i].constructor.name + '</span></td>' +
-            '<td>' + eTbl[i].laps + '</td>' +
-            '<td>' + eTbl[i].points + '</td>';
+        childRow.innerHTML = '<td>'+eTbl[i].position+'</td>'
+        +'<td> <span id="driver '+eTbl[i].driver.ref+'">'+eTbl[i].driver.forename+' '+eTbl[i].driver.surname+'</span></td>'
+        +'<td> <span id="constructor '+eTbl[i].constructor.ref+'">'+eTbl[i].constructor.name+'</span></td>'
+        +'<td>'+eTbl[i].laps+'</td>'
+        +'<td>'+eTbl[i].points+'</td>';
         eTblBox.appendChild(childRow);
     }
 }
 
-// don't touch above, it works
-// work on stuff below.
 
-async function main(year) {
+
+//don't touch above, it works
+//work on stuff below.
+
+async function main(year){
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     console.dir(rTbl);
@@ -143,29 +152,29 @@ async function main(year) {
     unhideElement("#browse");
 }
 
-async function main2(year, round) {
+async function main2(year, round){
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
-    buildQandETables(filterTables(qTbl, round), filterTables(eTbl, round));
+    buildQandETables(filterTables(qTbl,round),filterTables(eTbl,round));
 }
 
-async function main3(year, secondID) {
+async function main3(year, secondID){
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildDriverCard(secondID, qTbl);
 }
-
-async function main4(year, secondID) {
+async function main4(year, secondID){
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildConstructorCard(secondID, qTbl);
 }
 
-async function main5(year, circuitID) {
+async function main5(year, circuitID){
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildConstructorCard(circuitID, eTbl);
 }
+
 
 function buildDriverCard(secondID, Tbl) {
     const driverData = Tbl.find(entry => entry.driver.ref === secondID);
@@ -194,6 +203,7 @@ function buildDriverCard(secondID, Tbl) {
     unhideElement("#driverCard");
 }
 
+
 function buildConstructorCard(secondID, Tbl) {
     const constructorData = Tbl.find(entry => entry.constructor.ref === secondID);
 
@@ -212,7 +222,9 @@ function buildConstructorCard(secondID, Tbl) {
         </div>
     `;
     unhideElement("#constructorCard");
+
 }
+
 
 function buildCircuitCard(secondID, Tbl) {
     const circuitData = Tbl.find(entry => entry.circuit.ref === secondID);
@@ -232,7 +244,10 @@ function buildCircuitCard(secondID, Tbl) {
         </div>
     `;
     unhideElement("#circuitCard");
+
 }
+
+
 
 /*
 
@@ -242,78 +257,81 @@ function buildCircuitCard(secondID, Tbl) {
 
 */
 
+
 hideElement("#browse");
 hideElement("#driverCard");
 hideElement("#constructorCard");
 hideElement("#circuitCard");
 
-// rebuild all your stuff now.
-document.addEventListener("DOMContentLoaded", function () {
+//rebuild all your stuff now.
+document.addEventListener("DOMContentLoaded", function(){
 
+    
     unhideElement("#home");
 
-    // build the race menu.
-    document.querySelector("#selectYear").addEventListener("change", e => {
+    //build the race menu.
+    document.querySelector("#selectYear").addEventListener("change", e =>{
         clearTables("#rTbl-container");
         YEAR = e.target.value;
         main(YEAR);
     });
 
-    // build qualifying and race results.
-    document.querySelector("#races").addEventListener("click", e => {
-
-        // WHYYYYYYYY JAVASCRIPT! I THOUGHT YOU DIDN'T CARE ABOUT TYPING
+    //build qualifying and race results.
+    document.querySelector("#races").addEventListener("click", e =>{
+       
+        //WHYYYYYYYY JAVASCRIPT! I THOUGHT YOU DIDN'T CARE ABOUT TYPING
         main2(parseInt(e.target.dataset.value1), parseInt(e.target.dataset.value2));
 
+    }); 
+
+    document.querySelector("#qTbl-container").addEventListener("click", e =>{
+        
+        const clicked = e.target.id
+        const parts = clicked.split(" ");
+        const secondId = parts[1];
+        
+        if(clicked.includes("driver")){
+            // Create a driver card
+            main3(2023, secondId);
+            unhideElement("#driverCard");
+        }
+        else if (clicked.includes("constructor")){
+            
+            main4(2023, secondId);
+            unhideElement("#constructorCard");
+            
+        }
+
     });
 
-    document.querySelector("#qTbl-container").addEventListener("click", e => {
-
+    document.querySelector("#eTbl-container").addEventListener("click", e =>{
+        
         const clicked = e.target.id
         const parts = clicked.split(" ");
         const secondId = parts[1];
 
-        if (clicked.includes("driver")) {
+        if(clicked.includes("driver")){
             // Create a driver card
-            main3(YEAR, secondId);
+            main3(2023, secondId);
             unhideElement("#driverCard");
         }
-        else if (clicked.includes("constructor")) {
-
-            main4(YEAR, secondId);
+        else if (clicked.includes("constructor")){
+            
+            main4(2023, secondId);
             unhideElement("#constructorCard");
-
+            
         }
 
     });
 
-    document.querySelector("#eTbl-container").addEventListener("click", e => {
+    document.querySelector("#rTbl-container").addEventListener("click", e =>{
 
-        const clicked = e.target.id
-        const parts = clicked.split(" ");
-        const secondId = parts[1];
-
-        if (clicked.includes("driver")) {
-            // Create a driver card
-            main3(YEAR, secondId);
-            unhideElement("#driverCard");
-        }
-        else if (clicked.includes("constructor")) {
-
-            main4(YEAR, secondId);
-            unhideElement("#constructorCard");
-
-        }
-
-    });
-
-    document.querySelector("#rTbl-container").addEventListener("click", e => {
-
-        if (e.target.tagName !== 'BUTTON') {
+        if(e.target.tagName !== 'BUTTON'){
             console.dir(e.target.id);
-            main5(YEAR, e.target.id);
+            main5(2023, e.target.id);
         }
 
     });
 
 });
+
