@@ -157,7 +157,7 @@ function buildQandETables(qTbl, eTbl) {
     }
 }
 
-
+//main function handles hiding, unhiding and race tables
 async function main(year) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
@@ -167,24 +167,27 @@ async function main(year) {
     unhideElement("#browse");
 }
 
+//builds the main tables
 async function main2(year, round) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildQandETables(filterTables(qTbl, round), filterTables(eTbl, round));
 }
 
+//builds the driver card
 async function main3(year, secondID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildDriverCard(secondID, eTbl);
 }
-
+//builds the constructor card
 async function main4(year, secondID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
     buildConstructorCard(secondID, eTbl);
 }
 
+//builds the circuit card
 async function main5(year, circuitID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
@@ -355,6 +358,8 @@ function xButton(selector){
 
 */
 
+
+//unhide shit
 hideElement("#browse");
 hideElement("#driver");
 hideElement("#constructor");
