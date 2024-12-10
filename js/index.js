@@ -27,7 +27,7 @@ function saveLocalCopy(key, data) {
 async function fetchTableData(url, year) {
     try {
         const response = await fetch(url + year);
-        //console.dir(response);
+        
         return await response.json();
     } catch (error) {
         console.dir(error);
@@ -161,7 +161,6 @@ function buildQandETables(qTbl, eTbl) {
 async function main(year) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
-    console.dir(rTbl);
     raceTable(rTbl);
     hideElement("#home");
     hideElement("#banter");
@@ -177,13 +176,13 @@ async function main2(year, round) {
 async function main3(year, secondID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
-    buildDriverCard(secondID, qTbl);
+    buildDriverCard(secondID, eTbl);
 }
 
 async function main4(year, secondID) {
     const data = await fetchAndStoreData(year);
     const { rTbl, qTbl, eTbl } = data;
-    buildConstructorCard(secondID, qTbl);
+    buildConstructorCard(secondID, eTbl);
 }
 
 async function main5(year, circuitID) {
@@ -192,6 +191,7 @@ async function main5(year, circuitID) {
     buildCircuitCard(circuitID, eTbl);
 }
 
+//build driver cards
 function buildDriverCard(secondID, Tbl) {
     const driverData = Tbl.find(entry => entry.driver.ref === secondID);
 
@@ -200,45 +200,125 @@ function buildDriverCard(secondID, Tbl) {
         return;
     }
 
-    // Select the container where the card will be appended
     const container = document.querySelector("#driverCard");
     if (!container) {
         console.error('Container with ID "driverCard" not found.');
         return;
     }
 
-    clearTables("#driverCard");
+    clearTables("#driverCard"); 
 
-    container.innerHTML = `
-        <ul>
-            <li id="driverName">${driverData.driver.forename} ${driverData.driver.surname}</li>
-            <li id="driverNationality">${driverData.driver.nationality}</li>
-            <li id="driverUrl">${driverData.driver.number}</li>
-        </ul>
+    const ul = document.createElement("ul");
+    ul.innerHTML = `
+        <li id="driverName">${driverData.driver.forename} ${driverData.driver.surname}</li>
+        <li id="driverNationality">${driverData.driver.nationality}</li>
     `;
+    container.appendChild(ul);
+
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    thead.innerHTML = `
+        <tr>
+            <th class="px-4 py-2">Round</th>
+            <th class="px-4 py-2">Race Name</th>
+            <th class="px-4 py-2">Position</th>
+            <th class="px-4 py-2">Points</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+
+    for (let i = 0; i < Tbl.length; i++) {
+        if (Tbl[i].driver.ref === secondID) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="px-4 py-2">${Tbl[i].race.round}</td>
+                <td class="px-4 py-2">${Tbl[i].race.name}</td>
+                <td class="px-4 py-2">${Tbl[i].position}</td>
+                <td class="px-4 py-2">${Tbl[i].points}</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+
+    table.appendChild(tbody);
+
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("max-h-96", "overflow-y-auto", "border", "border-gray-300", "w-[500px]");
+
+    tableWrapper.appendChild(table); 
+    container.appendChild(tableWrapper); 
+
     unhideElement("#driver");
 }
 
+//build constructor cards
 function buildConstructorCard(secondID, Tbl) {
     const constructorData = Tbl.find(entry => entry.constructor.ref === secondID);
-
-    const container = document.querySelector("#constructorCard");
     if (!constructorData) {
-        console.error(`Constructor with name "${secondID}" not found.`);
+        console.error(`Constructor with ref "${secondID}" not found.`);
         return null;
     }
-    clearTables("#constructorCard");
 
-    container.innerHTML = `
-        <ul>
-            <li id="constructorName">${constructorData.constructor.name}</li>
-            <li id="constructorNationality">${constructorData.constructor.nationality}</li>
-            <li id="constructorUrl">${constructorData.constructor.url}</li>
-        </ul>
+    const container = document.querySelector("#constructorCard");
+    if (!container) {
+        console.error('Container with ID "constructorCard" not found.');
+        return;
+    }
+
+    clearTables("#constructorCard"); 
+
+    const ul = document.createElement("ul");
+    ul.innerHTML = `
+        <li id="constructorName">${constructorData.constructor.name}</li>
+        <li id="constructorNationality">${constructorData.constructor.nationality}</li>
     `;
+    container.appendChild(ul);
+
+    
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    thead.innerHTML = `
+        <tr>
+            <th class="px-4 py-2">Round</th>
+            <th class="px-4 py-2">Race Name</th>
+            <th class="px-4 py-2">Driver</th>
+            <th class="px-4 py-2">Position</th>
+            <th class="px-4 py-2">Points</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+
+   
+    const tbody = document.createElement("tbody");
+
+    for (let i = 0; i < Tbl.length; i++) {
+        if (Tbl[i].constructor.ref === secondID) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="px-4 py-2">${Tbl[i].race.round}</td>
+                <td class="px-4 py-2">${Tbl[i].race.name}</td>
+                <td class="px-4 py-2">${Tbl[i].driver.forename} ${Tbl[i].driver.surname}</td>
+                <td class="px-4 py-2">${Tbl[i].position}</td>
+                <td class="px-4 py-2">${Tbl[i].points}</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+
+    table.appendChild(tbody);
+
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("max-h-96", "overflow-y-auto", "border", "border-gray-300", "w-[500px]");
+
+    tableWrapper.appendChild(table);  
+    container.appendChild(tableWrapper); 
+
     unhideElement("#constructor");
 }
 
+//broken for some reason and Im not gonna fix this 
 function buildCircuitCard(secondID, Tbl) {
     const circuitData = Tbl.find(function(entry) {
         return entry.circuit.ref === secondID;
@@ -262,7 +342,7 @@ function buildCircuitCard(secondID, Tbl) {
     unhideElement("#circuit");
 }
 
-
+//close for the popups
 function xButton(selector){
     document.querySelector(selector).style.display = 'none';
 }
